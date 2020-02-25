@@ -9,6 +9,7 @@
 
 class System {
  public:
+  System();
   Processor& Cpu();                   // TODO: See src/system.cpp
   std::vector<Process>& Processes();  // TODO: See src/system.cpp
   float MemoryUtilization();          // TODO: See src/system.cpp
@@ -20,8 +21,14 @@ class System {
 
   // TODO: Define any necessary private members
  private:
+  const std::string kernelVersion;
+  const std::string os_name;
   Processor cpu_ = {};
   std::vector<Process> processes_ = {};
+
+  std::string RetrieveKernel();
+  std::string RetrieveOSName();
+
 };
 
 #endif

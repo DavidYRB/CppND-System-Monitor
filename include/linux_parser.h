@@ -24,6 +24,7 @@ long UpTime();
 std::vector<int> Pids();
 int TotalProcesses();
 int RunningProcesses();
+int FindProcessInfo(std::string process_item);
 std::string OperatingSystem();
 std::string Kernel();
 
