@@ -104,21 +104,53 @@ long LinuxParser::UpTime() {
   return uptime_l;
 }
 
-// TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
+// Read and return the number of jiffies for the system
+long LinuxParser::Jiffies() {
+  return ActiveJiffies() + IdleJiffies();
+}
 
-// TODO: Read and return the number of active jiffies for a PID
+// Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
 
-// TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+// Read and return the number of active jiffies for the system
+long LinuxParser::ActiveJiffies() {
+  vector<string> cpuState = CpuUtilization();
+  long activeTotal = std::stol(cpuState[LinuxParser::CPUStates::kUser_]) + 
+                     std::stol(cpuState[LinuxParser::CPUStates::kNice_]) +
+                     std::stol(cpuState[LinuxParser::CPUStates::kSystem_]) + 
+                     std::stol(cpuState[LinuxParser::CPUStates::kSteal_]) + 
+                     std::stol(cpuState[LinuxParser::CPUStates::kIRQ_]) + 
+                     std::stol(cpuState[LinuxParser::CPUStates::kSoftIRQ_]);
+  return activeTotal;
+}
 
-// TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
+// Read and return the number of idle jiffies for the system
+long LinuxParser::IdleJiffies() {
+  vector<string> cpuState = CpuUtilization();
+  long idleTotal = std::stol(cpuState[LinuxParser::CPUStates::kIdle_]) + std::stol(cpuState[LinuxParser::CPUStates::kIOwait_]);
+  return idleTotal;
+}
 
-// TODO: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() { return {}; }
+// Read and return CPU utilization
+vector<string> LinuxParser::CpuUtilization() {
+  vector<string> cpuRecord;
+  string line, key, value;
+  std::ifstream stream(kProcDirectory + kStatFilename);
+  if(stream.is_open()){
+    while(std::getline(stream, line)){
+      std::istringstream linestream(line);
+      linestream >> key;
+      if(key == "cpu"){
+        while(linestream >> value){
+          cpuRecord.push_back(value);
+        }
+        break;
+      }
+    }
+  }
+  return cpuRecord;
+}
 
 int LinuxParser::FindProcessInfo(std::string process_item){
   string line, key, key2, value;
