@@ -16,18 +16,37 @@ using std::vector;
 
 // Construct the system object
 System::System() : 
-    os_name(System::RetrieveOSName()),
-    kernelVersion(System::RetrieveKernel()){}
+    os_name_(System::RetrieveOSName()),
+    kernelVersion_(System::RetrieveKernel()){}
 
-// TODO: Return the system's CPU
+// Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
-// TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { return processes_; }
+// Return a container composed of the system's processes
+vector<Process>& System::Processes() {
+    processes_.erase(processes_.begin(), processes_.end());
+    vector<int> pids = LinuxParser::Pids();
+    vector<int>::iterator pidIt;
+    for(pidIt = pids.begin(); pidIt != pids.end(); pidIt++){
+        Process processTemp(*pidIt);
+        if(processes_.empty() || *processes_.begin() < processTemp){
+            processes_.insert(processes_.begin(), processTemp);
+            continue;
+        }
+        for(auto processIt = processes_.begin(); processIt != processes_.end(); processIt++){
+            if(processTemp < *processIt){
+                if(*(processIt + 1) < processTemp || processIt + 1 == processes_.end()){
+                    processes_.insert(processIt + 1, processTemp);
+                }
+            }
+        }
+    }
+    return processes_;
+}
 
 // Return the system's kernel identifier (string)
 std::string System::Kernel() {
-    return kernelVersion;
+    return kernelVersion_;
 }
 
 // Return the system's memory utilization
@@ -37,7 +56,7 @@ float System::MemoryUtilization() {
 
 // Return the operating system name
 std::string System::OperatingSystem() { 
-    return os_name;
+    return os_name_;
 }
 
 // Return the number of processes actively running on the system

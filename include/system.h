@@ -1,6 +1,7 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
+#include <unordered_map>
 #include <string>
 #include <vector>
 
@@ -21,10 +22,11 @@ class System {
 
   // TODO: Define any necessary private members
  private:
-  const std::string kernelVersion;
-  const std::string os_name;
-  Processor cpu_ = {};
-  std::vector<Process> processes_ = {};
+  const std::string kernelVersion_;
+  const std::string os_name_;
+  Processor cpu_;
+  std::vector<Process> processes_;
+  std::unordered_map<string, string> uidUserMap_;
 
   std::string RetrieveKernel();
   std::string RetrieveOSName();
