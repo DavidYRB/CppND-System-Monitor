@@ -28,7 +28,7 @@ int RunningProcesses();
 int FindProcessInfo(std::string process_item);
 std::string OperatingSystem();
 std::string Kernel();
-void FindUidUser(std::unordered_map<string, string>& uidUserMap);
+void FindUidUser(std::unordered_map<std::string, std::string>& uidUserMap);
 
 // CPU
 enum CPUStates {
