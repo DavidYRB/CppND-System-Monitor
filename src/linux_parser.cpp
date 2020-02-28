@@ -90,7 +90,7 @@ float LinuxParser::MemoryUtilization() {
   return (memInfo[0] - memInfo[1]) / memInfo[0];
 }
 
-// TODO: Read and return the system uptime
+// Read and return the system uptime
 long LinuxParser::UpTime() {
   string line, uptime_s;
   long uptime_l{0};
@@ -110,7 +110,6 @@ long LinuxParser::Jiffies() {
 }
 
 // Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
 
 // Read and return the number of active jiffies for the system
@@ -180,27 +179,76 @@ int LinuxParser::TotalProcesses() {
   return FindProcessInfo("processes");
 }
 
-// TODO: Read and return the number of running processes
+// Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
   return FindProcessInfo("procs_running");
 }
 
-// TODO: Read and return the command associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
+// Read and return the command associated with a process
+string LinuxParser::Command(int pid) {
+  string line;
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kCmdlineFilename);
+  if(stream.is_open()){
+    std::getline(stream, line);
+  }
+  return line;
+}
 
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
 
-// TODO: Read and return the user ID associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
+void LinuxParser::FindUidUser(std::unordered_map<string, string>& uidUserMap){
+  string line;
+  std::ifstream stream(kPasswordPath);
+  if(stream.is_open()){
+    while(std::getline(stream, line)){
+      string user, mod, uid;
+      std::replace(line.begin(), line.end(), ':', ' ');
+      std::istringstream linestream(line);
+      linestream >> user >> mod >> uid;
+      if(uidUserMap.find(uid) == uidUserMap.end()){
+        uidUserMap[uid] = user;
+      }
+    }
+  }
+}
 
-// TODO: Read and return the user associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+// Read and return the user ID associated with a process
+string LinuxParser::Uid(int pid) {
+  string line, key, value;
+  std::ifstream stream(kProcDirectory + to_string(pid) + kStatusFilename);
+  if(stream.is_open()){
+    while(std::getline(stream, line)){
+      std::istringstream linestream(line);
+      linestream >> key;
+      if(key == "uid:"){
+        linestream >> value;
+        break;
+      }
+    }
+  }
+  return value;
+}
 
-// TODO: Read and return the uptime of a process
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+// Read and return the user associated with a process
+string LinuxParser::User(int pid, const std::unordered_map<string, string>& uidUserMap) {
+  string uid = Uid(pid);
+  auto it = uidUserMap.find(uid);
+  return it->second;
+}
+
+// Read and return the uptime of a process
+long LinuxParser::UpTime(int pid) {
+  string line, uptime_s;
+  std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
+  if(stream.is_open()){
+    std::getline(stream, line);
+    std::istringstream linestream(line);
+    for(int i = 0; i <= 21; ++i){
+      linestream >> uptime_s;
+    }
+  }
+  long long unsigned uptime_ticks = std::stoll(uptime_s);
+  return uptime_ticks/sysconf(_SC_CLK_TCK);
+}
