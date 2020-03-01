@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "linux_parser.h"
 #include "process.h"
 #include "processor.h"
 
@@ -20,7 +21,7 @@ class System {
   std::string Kernel();               
   std::string OperatingSystem();      
   // The safety concern, should the linuxParser have access to the private member of system?
-  friend void LinuxParser::User(int pid, const std::unordered_map<string, string>& uidUserMap);
+  friend void LinuxParser::User(int pid, const std::unordered_map<std::string, std::string>& uidUserMap);
   friend class Process;
   
  private:
