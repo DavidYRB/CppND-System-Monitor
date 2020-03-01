@@ -19,6 +19,8 @@ class System {
   int RunningProcesses();             // TODO: See src/system.cpp
   std::string Kernel();               // TODO: See src/system.cpp
   std::string OperatingSystem();      // TODO: See src/system.cpp
+  // The safety concern, should the linuxParser have access to the private member of system?
+  friend void LinuxParser::User(int pid, const std::unordered_map<string, string>& uidUserMap);
 
   // TODO: Define any necessary private members
  private:

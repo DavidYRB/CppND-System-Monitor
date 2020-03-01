@@ -26,9 +26,10 @@ Processor& System::Cpu() { return cpu_; }
 vector<Process>& System::Processes() {
     processes_.erase(processes_.begin(), processes_.end());
     vector<int> pids = LinuxParser::Pids();
+    LinuxParser::FindUidUser(uidUserMap_);
     vector<int>::iterator pidIt;
     for(pidIt = pids.begin(); pidIt != pids.end(); pidIt++){
-        Process processTemp(*pidIt);
+        Process processTemp(*pidIt, this);
         if(processes_.empty() || *processes_.begin() < processTemp){
             processes_.insert(processes_.begin(), processTemp);
             continue;

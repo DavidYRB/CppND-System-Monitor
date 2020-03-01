@@ -6,13 +6,15 @@
 
 #include "linux_parser.h"
 #include "process.h"
+#include "system.h"
 
 using std::string;
 using std::to_string;
 using std::vector;
 
-Process::Process(int pid) : pid_(pid), 
-                            user_(LinuxParser::User(pid)), 
+Process::Process(int pid, System* hostSystem) : pid_(pid),
+                            hostSystem_(hostSystem),
+                            user_(LinuxParser::User(pid, hostSystem->uidUserMap_)), 
                             command_(LinuxParser::Command(pid)){}
 
 // Return this process's ID
@@ -43,10 +45,10 @@ long int Process::UpTime() {
 
 // Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {
-    if(a.cpuUsage != this.cpuUsage){
-        return this.cpuUsage < a.cpuUdage ? true : false;
+    if(a.cpuUsage_ != this.cpuUsage_){
+        return this.cpuUsage_ < a.cpuUsage_ ? true : false;
     }
     else{
-        return this.ramUsage <= a.ramUsage ? true : false;
+        return this.ramUsage_ <= a.ramUsage_ ? true : false;
     }
 }
