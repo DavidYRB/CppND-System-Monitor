@@ -21,7 +21,7 @@ class System {
   std::string Kernel();               
   std::string OperatingSystem();      
   // The safety concern, should the linuxParser have access to the private member of system?
-  friend void LinuxParser::User(int pid, const std::unordered_map<std::string, std::string>& uidUserMap);
+  friend std::string LinuxParser::User(int pid, const std::unordered_map<std::string, std::string>& uidUserMap);
   friend class Process;
   
  private:
