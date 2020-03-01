@@ -22,23 +22,34 @@ int Process::Pid() {
     return pid_;
 }
 
-// TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { return 0; }
+// Return this process's CPU utilization
+float Process::CpuUtilization() {
+    long activeJiffies = LinuxParser::ActiveJiffies(pid_);
+    long cpuTime = LinuxParser::Jiffies();
+    float processCpuUsage = (activeJiffies - activeJiffiesPrev_) * 1.0 / (cpuTime - hostSystem_->cpu_.prevTotal);
+    activeJiffiesPrev_ = activeJiffies;
+    return processCpuUsage;
+}
 
 // Return the command that generated this process
 string Process::Command() { 
     return command_;
 }
 
-// TODO: Return this process's memory utilization
-string Process::Ram() { return string(); }
+// Return this process's memory utilization
+string Process::Ram() {
+    string ram = LinuxParser::Ram(pid_);
+    long ram_value = std::stol(ram);
+    ram = to_string(ram_value/1024);
+    return ram;
+}
 
 // Return the user (name) that generated this process
 string Process::User() {
     return user_;
 }
 
-// TODO: Return the age of this process (in seconds)
+// Return the age of this process (in seconds)
 long int Process::UpTime() {
     return LinuxParser::UpTime(pid_);
 }
