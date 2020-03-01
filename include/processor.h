@@ -3,10 +3,10 @@
 
 class Processor {
  public:
-  float Utilization();  // TODO: See src/processor.cpp
+  float Utilization();  
   Processor(): prevIdel{0}, prevTotal{0} {}
+  friend class Process;
 
-  // TODO: Declare any necessary private members
  private:
     float prevIdel, prevTotal;
 };
