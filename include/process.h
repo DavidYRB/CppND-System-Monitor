@@ -21,6 +21,7 @@ class Process {
 
   // TODO: Declare any necessary private members
  private:
+  long activeJiffiesPrev_;
   float cpuUsage_;
   float ramUsage_;
   long int uptime_;
