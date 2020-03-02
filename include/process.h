@@ -29,6 +29,7 @@ class Process {
   float cpuUsage_;
   float ramUsage_;
   long int uptime_;
+  std::string ram_;
 
   float AverageCpuUsage();
   float LatestCpuUsage();

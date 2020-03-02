@@ -17,19 +17,23 @@ Process::Process(int pid, std::unordered_map<std::string, std::string>& uidUser)
     command_ = LinuxParser::Command(pid_);
     user_ = LinuxParser::User(pid_, uidUser);
     uptime_ = LinuxParser::UpTime(pid_);
-    
+    cpuUsage_ = AverageCpuUsage();
+    string ram = LinuxParser::Ram(pid_);
+    long ram_value = std::stol(ram);
+    ram_ = to_string(ram_value/1024);
+
 }
 
 // Return this process's ID
 int Process::Pid() {
-    std::cout <<"Get PID: " << pid_ <<'\n';
+    // std::cout <<"Get PID: " << pid_ <<'\n';
     return pid_;
 }
 
 // Return this process's CPU utilization
 float Process::CpuUtilization() {
-    std::cout <<"Get CpuUsage\n";
-    return AverageCpuUsage();
+    // std::cout <<"Get CpuUsage\n";
+    return cpuUsage_;
 }
 
 void Process::CpuTimePrev(long time){
@@ -38,18 +42,14 @@ void Process::CpuTimePrev(long time){
 
 // Return the command that generated this process
 string Process::Command() { 
-    std::cout <<"Get Command\n";
+    // std::cout <<"Get Command\n";
     return command_;
 }
 
 // Return this process's memory utilization
 string Process::Ram() {
-    std::cout <<"Get Ram\n";
-    string ram = LinuxParser::Ram(pid_);
-    std::cout << "Ram: " << ram << '\n';
-    long ram_value = std::stol(ram);
-    ram = to_string(ram_value/1024);
-    return ram;
+    // std::cout <<"Get Ram\n";
+    return ram_;
 }
 
 // Return the user (name) that generated this process
