@@ -48,19 +48,19 @@ string Process::Command() {
 
 // Return this process's memory utilization
 string Process::Ram() {
-    // std::cout <<"Get Ram\n";
+    std::cout <<"Get Ram ";
     return ram_;
 }
 
 // Return the user (name) that generated this process
 string Process::User() {
-    std::cout <<"Get User\n";
+    std::cout <<"Get User ";
     return user_;
 }
 
 // Return the age of this process (in seconds)
 long int Process::UpTime() {
-    std::cout <<"Get Uptime\n";
+    std::cout <<"Get Uptime ";
     return uptime_;
 }
 
