@@ -23,12 +23,8 @@ int Process::Pid() {
 }
 
 // Return this process's CPU utilization
-float Process::CpuUtilization() {
-    long activeJiffies = LinuxParser::ActiveJiffies(pid_);
-    long cpuTime = LinuxParser::Jiffies();
-    float processCpuUsage = (activeJiffies - activeJiffiesPrev_) * 1.0 / (cpuTime - cpuTimePrev_);
-    activeJiffiesPrev_ = activeJiffies;
-    return processCpuUsage;
+float Process::CpuUtilization() { 
+    return AverageCpuUsage();
 }
 
 void Process::CpuTimePrev(long time){
@@ -62,4 +58,19 @@ long int Process::UpTime() {
 bool Process::operator<(const Process& a) const{
     return this->cpuUsage_ < a.cpuUsage_ ? true : false;
 
+}
+
+float Process::AverageCpuUsage(){
+    long cpuUptime = LinuxParser::UpTime();
+    long processTime = cpuUptime - uptime_;
+    long processActiveJiffies = LinuxParser::ActiveJiffies(pid_);
+    return processActiveJiffies * 1.0 / (processTime * sysconf(_SC_CLK_TCK));
+}
+
+float Process::LatestCpuUsage(){
+    long activeJiffies = LinuxParser::ActiveJiffies(pid_);
+    long cpuTime = LinuxParser::Jiffies();
+    float processCpuUsage = (activeJiffies - activeJiffiesPrev_) * 1.0 / (cpuTime - cpuTimePrev_);
+    activeJiffiesPrev_ = activeJiffies;
+    return processCpuUsage;
 }

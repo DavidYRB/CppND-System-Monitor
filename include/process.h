@@ -29,6 +29,9 @@ class Process {
   float cpuUsage_;
   float ramUsage_;
   long int uptime_;
+
+  float AverageCpuUsage();
+  float LatestCpuUsage();
 };
 
 #endif
