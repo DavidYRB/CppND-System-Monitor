@@ -12,10 +12,10 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-Process::Process(int pid, System* hostSystem) : pid_(pid),
-                            hostSystem_(hostSystem),
-                            user_(LinuxParser::User(pid, hostSystem->uidUserMap_)), 
-                            command_(LinuxParser::Command(pid)){}
+Process::Process(int pid, std::unordered_map<std::string, std::string>& uidUser): pid_(pid){
+    //command_ = LinuxParser::Command(pid_);
+    //user_ = LinuxParser::User(pid_, uidUser);
+}
 
 // Return this process's ID
 int Process::Pid() {
@@ -26,9 +26,13 @@ int Process::Pid() {
 float Process::CpuUtilization() {
     long activeJiffies = LinuxParser::ActiveJiffies(pid_);
     long cpuTime = LinuxParser::Jiffies();
-    float processCpuUsage = (activeJiffies - activeJiffiesPrev_) * 1.0 / (cpuTime - hostSystem_->cpu_.prevTotal);
+    float processCpuUsage = (activeJiffies - activeJiffiesPrev_) * 1.0 / (cpuTime - cpuTimePrev_);
     activeJiffiesPrev_ = activeJiffies;
     return processCpuUsage;
+}
+
+void Process::CpuTimePrev(long time){
+    cpuTimePrev_ = time;
 }
 
 // Return the command that generated this process
@@ -55,11 +59,7 @@ long int Process::UpTime() {
 }
 
 // Overload the "less than" comparison operator for Process objects
-bool Process::operator<(Process const& a) const {
-    if(a.cpuUsage_ != this.cpuUsage_){
-        return this.cpuUsage_ < a.cpuUsage_ ? true : false;
-    }
-    else{
-        return this.ramUsage_ <= a.ramUsage_ ? true : false;
-    }
+bool Process::operator<(const Process& a) const{
+    return this->cpuUsage_ < a.cpuUsage_ ? true : false;
+
 }

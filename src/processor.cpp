@@ -6,10 +6,14 @@ float Processor::Utilization() {
     long currIdel = LinuxParser::IdleJiffies();
     long currActive = LinuxParser::ActiveJiffies();
     long currTotal = currIdel + currActive;
-    float totalDiff = currTotal - prevTotal;
-    long idleDiff = currIdel - prevIdel;
+    float totalDiff = currTotal - prevTotal_;
+    long idleDiff = currIdel - prevIdel_;
     float cpuUsage = (totalDiff - idleDiff)/totalDiff;
-    prevIdel = currIdel;
-    prevTotal = currTotal;
+    prevIdel_ = currIdel;
+    prevTotal_ = currTotal;
     return cpuUsage;
+}
+
+long Processor::TotalTime(){
+    return prevTotal_;
 }

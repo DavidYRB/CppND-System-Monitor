@@ -9,8 +9,11 @@
 #include "process.h"
 #include "processor.h"
 
+class Process;
+
 class System {
  public:
+  friend class Process;
   System();
   Processor& Cpu();                   
   std::vector<Process>& Processes();  
@@ -19,10 +22,7 @@ class System {
   int TotalProcesses();               
   int RunningProcesses();             
   std::string Kernel();               
-  std::string OperatingSystem();      
-  // The safety concern, should the linuxParser have access to the private member of system?
-  friend std::string LinuxParser::User(int pid, const std::unordered_map<std::string, std::string>& uidUserMap);
-  friend class Process;
+  std::string OperatingSystem();
   
  private:
   const std::string kernelVersion_;
@@ -31,8 +31,6 @@ class System {
   std::vector<Process> processes_;
   std::unordered_map<std::string, std::string> uidUserMap_;
 
-  std::string RetrieveKernel();
-  std::string RetrieveOSName();
 
 };
 

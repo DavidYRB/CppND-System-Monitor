@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include <iostream>
 #include "linux_parser.h"
 #include "process.h"
 #include "processor.h"
@@ -16,22 +17,39 @@ using std::vector;
 
 // Construct the system object
 System::System() : 
-    os_name_(System::RetrieveOSName()),
-    kernelVersion_(System::RetrieveKernel()){}
+    os_name_(LinuxParser::OperatingSystem()),
+    kernelVersion_(LinuxParser::Kernel()){}
 
 // Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
 // Return a container composed of the system's processes
 vector<Process>& System::Processes() {
-    processes_.erase(processes_.begin(), processes_.end());
+    //std::cout <<"startd getting process\n";
+    if(processes_.size() != 0){
+        processes_.erase(processes_.begin(), processes_.end());
+    }
+    //std::cout <<"Get all pids\n";
     vector<int> pids = LinuxParser::Pids();
-    LinuxParser::FindUidUser(uidUserMap_);
+    //std::cout <<"Find uid user map\n";
+    std::unordered_map<std::string, std::string> uidUserMap;
+    LinuxParser::FindUidUser(uidUserMap);
+    //std::cout <<"uidUserMap size: " << uidUserMap.size() << '\n';
     vector<int>::iterator pidIt;
+    //std::cout <<"Start to put processes in order\n";
     for(pidIt = pids.begin(); pidIt != pids.end(); pidIt++){
-        Process processTemp(*pidIt, this);
-        if(processes_.empty() || *processes_.begin() < processTemp){
+        //std::cout <<"PID: " << *pidIt << '\n';
+        Process processTemp(*pidIt, uidUserMap);
+        //std::cout <<"Created temp process object\n";
+        processTemp.CpuTimePrev(Cpu().TotalTime());
+        if(processes_.empty()){
+            //std::cout <<"vector is empty\n";
+            processes_.push_back(processTemp);
+            continue;
+        }
+        else if(*(processes_.begin()) < processTemp){
             processes_.insert(processes_.begin(), processTemp);
+            //std::cout <<"Insert at head\n";
             continue;
         }
         for(auto processIt = processes_.begin(); processIt != processes_.end(); processIt++){
@@ -74,11 +92,3 @@ int System::TotalProcesses() {
 long int System::UpTime() {
     return LinuxParser::UpTime();
 }
-
-string System::RetrieveOSName(){
-    return LinuxParser::OperatingSystem();
-}
-
-string System::RetrieveKernel(){
-    return LinuxParser::Kernel();
-};

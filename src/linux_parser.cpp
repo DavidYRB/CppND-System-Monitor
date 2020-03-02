@@ -1,5 +1,6 @@
 #include <dirent.h>
 #include <unistd.h>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -113,7 +114,8 @@ long LinuxParser::Jiffies() {
 long LinuxParser::ActiveJiffies(int pid) {
   string line, key;
   long activeJiffies{0};
-  std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
+  const std::string kPid{to_string(pid)};
+  std::ifstream stream(kProcDirectory + kPid + kStatFilename);
   if(stream.is_open()){
     std::getline(stream, line);
     std::istringstream linestream(line);
@@ -203,10 +205,14 @@ int LinuxParser::RunningProcesses() {
 // Read and return the command associated with a process
 string LinuxParser::Command(int pid) {
   string line;
-  std::ifstream stream(kProcDirectory + std::to_string(pid) + kCmdlineFilename);
+  const std::string kPid{to_string(pid)};
+  std::ifstream stream(kProcDirectory + kPid + kCmdlineFilename);
+  std::cout <<"start command stream: " << kProcDirectory + std::to_string(pid) + kCmdlineFilename << '\n';
   if(stream.is_open()){
+    std::cout <<"the stream is opened\n";
     std::getline(stream, line);
   }
+  std::cout <<"cmd: " << line; 
   return line;
 }
 
@@ -253,6 +259,7 @@ string LinuxParser::Uid(int pid) {
       linestream >> key;
       if(key == "uid:"){
         linestream >> value;
+        std::cout << "Uid: " << value <<'\n';
         break;
       }
     }

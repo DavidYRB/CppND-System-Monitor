@@ -4,11 +4,12 @@
 class Processor {
  public:
   float Utilization();  
-  Processor(): prevIdel{0}, prevTotal{0} {}
+  Processor(): prevIdel_{0}, prevTotal_{0} {}
   friend class Process;
+  long TotalTime();
 
  private:
-    float prevIdel, prevTotal;
+    long prevIdel_, prevTotal_;
 };
 
 #endif
