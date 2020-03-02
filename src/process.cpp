@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <cctype>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -13,17 +14,21 @@ using std::to_string;
 using std::vector;
 
 Process::Process(int pid, std::unordered_map<std::string, std::string>& uidUser): pid_(pid){
-    //command_ = LinuxParser::Command(pid_);
-    //user_ = LinuxParser::User(pid_, uidUser);
+    command_ = LinuxParser::Command(pid_);
+    user_ = LinuxParser::User(pid_, uidUser);
+    uptime_ = LinuxParser::UpTime(pid_);
+    
 }
 
 // Return this process's ID
 int Process::Pid() {
+    std::cout <<"Get PID: " << pid_ <<'\n';
     return pid_;
 }
 
 // Return this process's CPU utilization
-float Process::CpuUtilization() { 
+float Process::CpuUtilization() {
+    std::cout <<"Get CpuUsage\n";
     return AverageCpuUsage();
 }
 
@@ -33,12 +38,15 @@ void Process::CpuTimePrev(long time){
 
 // Return the command that generated this process
 string Process::Command() { 
+    std::cout <<"Get Command\n";
     return command_;
 }
 
 // Return this process's memory utilization
 string Process::Ram() {
+    std::cout <<"Get Ram\n";
     string ram = LinuxParser::Ram(pid_);
+    std::cout << "Ram: " << ram << '\n';
     long ram_value = std::stol(ram);
     ram = to_string(ram_value/1024);
     return ram;
@@ -46,12 +54,14 @@ string Process::Ram() {
 
 // Return the user (name) that generated this process
 string Process::User() {
+    std::cout <<"Get User\n";
     return user_;
 }
 
 // Return the age of this process (in seconds)
 long int Process::UpTime() {
-    return LinuxParser::UpTime(pid_);
+    std::cout <<"Get Uptime\n";
+    return uptime_;
 }
 
 // Overload the "less than" comparison operator for Process objects

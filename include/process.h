@@ -23,8 +23,8 @@ class Process {
  private:
   int pid_;
   long cpuTimePrev_;
-  std::string user_;
-  std::string command_; 
+  std::string user_{"defalut"};
+  std::string command_{"empty"}; 
   long activeJiffiesPrev_;
   float cpuUsage_;
   float ramUsage_;

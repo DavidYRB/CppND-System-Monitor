@@ -281,10 +281,11 @@ long LinuxParser::UpTime(int pid) {
   if(stream.is_open()){
     std::getline(stream, line);
     std::istringstream linestream(line);
-    for(int i = 0; i <= 21; ++i){
+    for(int i = 1; i <= 22; ++i){
       linestream >> uptime_s;
     }
   }
-  long long unsigned uptime_ticks = std::stoll(uptime_s);
+  std::cout << "process : " << pid << "uptime: " << uptime_s << '\n';
+  long uptime_ticks = std::stol(uptime_s);
   return uptime_ticks/sysconf(_SC_CLK_TCK);
 }

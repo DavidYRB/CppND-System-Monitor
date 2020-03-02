@@ -60,6 +60,7 @@ vector<Process>& System::Processes() {
             }
         }
     }
+    std::cout <<"Finished process parsing\n";
     return processes_;
 }
 
