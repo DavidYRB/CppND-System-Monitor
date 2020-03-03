@@ -9,11 +9,8 @@
 #include "process.h"
 #include "processor.h"
 
-class Process;
-
 class System {
  public:
-  friend class Process;
   System();
   Processor& Cpu();                   
   std::vector<Process>& Processes();  
