@@ -29,8 +29,7 @@ class System {
   const std::string os_name_;
   Processor cpu_;
   std::vector<Process> processes_;
-  std::unordered_map<std::string, std::string> uidUserMap_;
-
+  std::unordered_map<int, Process> processesMap_;
 
 };
 
