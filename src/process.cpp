@@ -57,7 +57,10 @@ long int Process::UpTime() {
 // Overload the "less than" comparison operator for Process objects
 bool Process::operator<(const Process& a) const{
     return this->cpuUsage_ < a.cpuUsage_ ? true : false;
+}
 
+bool Process::operator==(const Process& a) const{
+    return this->pid_ == a.pid_;
 }
 
 float Process::AverageCpuUsage(){

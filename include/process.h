@@ -19,6 +19,7 @@ class Process {
   long int UpTime();                       // TODO: See src/process.cpp
   void UpdateProcess();
   bool operator<(const Process& a) const;  // TODO: See src/process.cpp
+  bool operator==(const Process& a) const;
 
   // Declare any necessary private members
  private:

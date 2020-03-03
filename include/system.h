@@ -9,6 +9,7 @@
 #include "process.h"
 #include "processor.h"
 
+class Process;
 class System {
  public:
   System();
