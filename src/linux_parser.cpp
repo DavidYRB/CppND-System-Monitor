@@ -204,16 +204,15 @@ int LinuxParser::RunningProcesses() {
 
 // Read and return the command associated with a process
 string LinuxParser::Command(int pid) {
-  string line;
+  string cmd;
   const std::string kPid{to_string(pid)};
   std::ifstream stream(kProcDirectory + kPid + kCmdlineFilename);
-  std::cout <<"start command stream: " << kProcDirectory + std::to_string(pid) + kCmdlineFilename << '\n';
   if(stream.is_open()){
-    std::cout <<"the stream is opened\n";
-    std::getline(stream, line);
+    std::stringstream linestream;
+    linestream << stream.rdbuf();
+    cmd = linestream.str();
   }
-  std::cout <<"cmd: " << line; 
-  return line;
+  return cmd;
 }
 
 // Read and return the memory used by a process
@@ -257,9 +256,8 @@ string LinuxParser::Uid(int pid) {
     while(std::getline(stream, line)){
       std::istringstream linestream(line);
       linestream >> key;
-      if(key == "uid:"){
+      if(key == "Uid:"){
         linestream >> value;
-        std::cout << "Uid: " << value <<'\n';
         break;
       }
     }
