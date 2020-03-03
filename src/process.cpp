@@ -26,13 +26,11 @@ Process::Process(int pid, std::unordered_map<std::string, std::string>& uidUser)
 
 // Return this process's ID
 int Process::Pid() {
-    // std::cout <<"Get PID: " << pid_ <<'\n';
     return pid_;
 }
 
 // Return this process's CPU utilization
 float Process::CpuUtilization() {
-    // std::cout <<"Get CpuUsage\n";
     return cpuUsage_;
 }
 
@@ -42,25 +40,21 @@ void Process::CpuTimePrev(long time){
 
 // Return the command that generated this process
 string Process::Command() { 
-    // std::cout <<"Get Command\n";
     return command_;
 }
 
 // Return this process's memory utilization
 string Process::Ram() {
-    std::cout <<"Get Ram ";
     return ram_;
 }
 
 // Return the user (name) that generated this process
 string Process::User() {
-    std::cout <<"Get User ";
     return user_;
 }
 
 // Return the age of this process (in seconds)
 long int Process::UpTime() {
-    std::cout <<"Get Uptime ";
     return uptime_;
 }
 
