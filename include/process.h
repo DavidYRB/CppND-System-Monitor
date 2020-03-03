@@ -17,22 +17,21 @@ class Process {
   float CpuUtilization();                  // TODO: See src/process.cpp
   std::string Ram();                       // TODO: See src/process.cpp
   long int UpTime();                       // TODO: See src/process.cpp
+  void UpdateProcess();
   bool operator<(const Process& a) const;  // TODO: See src/process.cpp
-  void CpuTimePrev(long time);
+
   // Declare any necessary private members
  private:
   int pid_;
-  long cpuTimePrev_;
   std::string user_{"defalut"};
   std::string command_{"empty"}; 
-  long activeJiffiesPrev_;
+  long activeJiffies_;
   float cpuUsage_;
-  float ramUsage_;
-  long int uptime_;
+  long uptime_;
   std::string ram_;
 
   float AverageCpuUsage();
-  float LatestCpuUsage();
+  float UpdateCpuUsage();
 };
 
 #endif

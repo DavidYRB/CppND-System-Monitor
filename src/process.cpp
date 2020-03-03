@@ -34,10 +34,6 @@ float Process::CpuUtilization() {
     return cpuUsage_;
 }
 
-void Process::CpuTimePrev(long time){
-    cpuTimePrev_ = time;
-}
-
 // Return the command that generated this process
 string Process::Command() { 
     return command_;
@@ -66,15 +62,24 @@ bool Process::operator<(const Process& a) const{
 
 float Process::AverageCpuUsage(){
     long cpuUptime = LinuxParser::UpTime();
-    long processTime = cpuUptime - uptime_;
     long processActiveJiffies = LinuxParser::ActiveJiffies(pid_);
-    return processActiveJiffies * 1.0 / (processTime * sysconf(_SC_CLK_TCK));
+    return processActiveJiffies * 1.0 / (uptime_ * sysconf(_SC_CLK_TCK));
 }
 
-float Process::LatestCpuUsage(){
-    long activeJiffies = LinuxParser::ActiveJiffies(pid_);
-    long cpuTime = LinuxParser::Jiffies();
-    float processCpuUsage = (activeJiffies - activeJiffiesPrev_) * 1.0 / (cpuTime - cpuTimePrev_);
-    activeJiffiesPrev_ = activeJiffies;
+float Process::UpdateCpuUsage(){
+    long currActiveJiffies = LinuxParser::ActiveJiffies(pid_);
+    long currUptime = LinuxParser::UpTime(pid_);
+    long jiffesDiff = currActiveJiffies - activeJiffies_;
+    if(jiffesDiff < 0){
+        jiffesDiff = 0;
+    }
+    float processCpuUsage = jiffesDiff * 1.0 / ((currUptime - uptime_) *sysconf(_SC_CLK_TCK));
+    activeJiffies_ = currActiveJiffies;
+    uptime_ = currUptime;
     return processCpuUsage;
+}
+
+void Process::UpdateProcess(){
+    cpuUsage_ = UpdateCpuUsage();
+    ram_ = LinuxParser::Ram(pid_);
 }
