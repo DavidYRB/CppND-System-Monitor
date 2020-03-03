@@ -29,9 +29,8 @@ class System {
   Processor cpu_;
   std::vector<Process> processes_;
   struct MyHashFunction{
-    size_t operator()(const Process& p) const{
-      return std::hash<std::string>()(p.command_)^
-              (std::hash<std::string>()(p.user_) << 1);
+    size_t operator()(const int i) const{
+      return i;
     }
   };
 
