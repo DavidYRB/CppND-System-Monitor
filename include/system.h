@@ -1,6 +1,7 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
+#include <functional>
 #include <unordered_map>
 #include <string>
 #include <vector>
@@ -27,7 +28,14 @@ class System {
   const std::string os_name_;
   Processor cpu_;
   std::vector<Process> processes_;
-  std::unordered_map<int, Process> processesMap_;
+  struct MyHashFunction{
+    size_t operator()(const Process& p) const{
+      return std::hash<std::string>()(p.command_)^
+              (std::hash<std::string>()(p.user_) << 1);
+    }
+  };
+
+  std::unordered_map<int, Process, MyHashFunction> processesMap_;
 
 };
 
