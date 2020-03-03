@@ -283,7 +283,6 @@ long LinuxParser::UpTime(int pid) {
       linestream >> uptime_s;
     }
   }
-  std::cout << "process : " << pid << "uptime: " << uptime_s << '\n';
   long uptime_ticks = std::stol(uptime_s);
-  return uptime_ticks/sysconf(_SC_CLK_TCK);
+  return LinuxParser::UpTime() - uptime_ticks/sysconf(_SC_CLK_TCK);
 }
