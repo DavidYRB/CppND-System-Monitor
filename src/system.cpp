@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <queue>
 #include <string>
+#include <set>
 #include <vector>
 
 #include <iostream>
@@ -32,7 +33,7 @@ vector<Process>& System::Processes() {
     std::unordered_map<std::string, std::string> uidUserMap;
     LinuxParser::FindUidUser(uidUserMap);
     auto cmp = [](Process& a, Process& b) {return a < b;};
-    std::priority_queue<Process&, vector<Process&>, decltype(cmp)> process_queue(cmp);
+    std::priority_queue<Process, vector<Process>, decltype(cmp)> process_queue(cmp);
     vector<int>::iterator pidIt;
     for(pidIt = pids.begin(); pidIt != pids.end(); pidIt++){
         // if(processesMap_.find(*pidIt) == processesMap_.end()){
