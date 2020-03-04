@@ -35,13 +35,15 @@ vector<Process>& System::Processes() {
     std::priority_queue<Process&, vector<Process&>, decltype(cmp)> process_queue(cmp);
     vector<int>::iterator pidIt;
     for(pidIt = pids.begin(); pidIt != pids.end(); pidIt++){
-        if(processesMap_.find(*pidIt) == processesMap_.end()){
-            Process processTemp(*pidIt, uidUserMap);
-        }
-        else{
-            processesMap_[*pidIt].UpdateProcess();
-        }
-        process_queue.push(processesMap_[*pidIt]);
+        // if(processesMap_.find(*pidIt) == processesMap_.end()){
+        //     Process processTemp(*pidIt, uidUserMap);
+        // }
+        // else{
+        //     processesMap_[*pidIt].UpdateProcess();
+        // }
+        // process_queue.push(processesMap_[*pidIt]);
+        Process processTemp(*pidIt, uidUserMap);
+        process_queue.push(processTemp);
     }
     while(!process_queue.empty()){
         processes_.push_back((process_queue.top()));
