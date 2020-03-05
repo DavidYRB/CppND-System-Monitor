@@ -44,7 +44,9 @@ vector<Process>& System::Processes() {
         // }
         // process_queue.push(processesMap_[*pidIt]);
         Process processTemp(*pidIt, uidUserMap);
-        process_queue.push(processTemp);
+        if(processTemp.FinishedInit()){
+            process_queue.push(processTemp);
+        }
     }
     while(!process_queue.empty()){
         processes_.push_back((process_queue.top()));
