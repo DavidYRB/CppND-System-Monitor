@@ -18,6 +18,7 @@ class Process {
   std::string Ram();                       // TODO: See src/process.cpp
   long int UpTime();                       // TODO: See src/process.cpp
   void UpdateProcess();
+  bool FinishedInit();
   bool operator<(const Process& a) const;  // TODO: See src/process.cpp
   bool operator==(const Process& a) const;
 
@@ -30,6 +31,7 @@ class Process {
   float cpuUsage_;
   long uptime_;
   std::string ram_;
+  bool isRunningProcess_{true};
 
   float AverageCpuUsage();
   float UpdateCpuUsage();

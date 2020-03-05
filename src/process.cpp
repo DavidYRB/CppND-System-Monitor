@@ -15,15 +15,35 @@ using std::vector;
 
 Process::Process(int pid, std::unordered_map<std::string, std::string>& uidUser): pid_(pid){
     command_ = LinuxParser::Command(pid_);
+    if(command_ == ""){
+        isRunningProcess_ = false;
+    }
     user_ = LinuxParser::User(pid_, uidUser);
-    uptime_ = LinuxParser::UpTime(pid_);
-    cpuUsage_ = AverageCpuUsage();
-    string ram = LinuxParser::Ram(pid_);
-    long ram_value = std::stol(ram);
-    ram_ = to_string(ram_value/1024);
+    if(user_ == ""){
+        isRunningProcess_ = false;
+    }
 
+    uptime_ = LinuxParser::UpTime(pid_);
+    if(uptime_ == -1){
+        isRunningProcess_ = false;
+    }
+    cpuUsage_ = AverageCpuUsage();
+    if(cpuUsage_ == -1){
+        isRunningProcess_ = false;
+    }
+    string ram = LinuxParser::Ram(pid_);
+    if(ram == ""){
+        isRunningProcess_ = false;
+    }
+    else{
+        long ram_value = std::stol(ram);
+        ram_ = to_string(ram_value/1024);
+    }
 }
 
+bool Process::FinishedInit(){
+    return isRunningProcess_;
+}
 // Return this process's ID
 int Process::Pid() {
     return pid_;
@@ -65,6 +85,9 @@ bool Process::operator==(const Process& a) const{
 
 float Process::AverageCpuUsage(){
     long processActiveJiffies = LinuxParser::ActiveJiffies(pid_);
+    if(processActiveJiffies == -1){
+        return -1;
+    }
     return processActiveJiffies * 1.0 / (uptime_ * sysconf(_SC_CLK_TCK));
 }
 
