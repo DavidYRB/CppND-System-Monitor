@@ -64,7 +64,6 @@ bool Process::operator==(const Process& a) const{
 }
 
 float Process::AverageCpuUsage(){
-    long cpuUptime = LinuxParser::UpTime();
     long processActiveJiffies = LinuxParser::ActiveJiffies(pid_);
     return processActiveJiffies * 1.0 / (uptime_ * sysconf(_SC_CLK_TCK));
 }

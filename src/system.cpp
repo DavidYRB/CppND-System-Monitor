@@ -4,6 +4,7 @@
 #include <string>
 #include <set>
 #include <vector>
+#include <set>
 
 #include <iostream>
 #include "linux_parser.h"
@@ -18,8 +19,8 @@ using std::vector;
 
 // Construct the system object
 System::System() : 
-    os_name_(LinuxParser::OperatingSystem()),
-    kernelVersion_(LinuxParser::Kernel()){}
+    kernelVersion_(LinuxParser::Kernel()),
+    os_name_(LinuxParser::OperatingSystem()){}
 
 // Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
