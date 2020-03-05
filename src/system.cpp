@@ -4,7 +4,6 @@
 #include <string>
 #include <set>
 #include <vector>
-#include <set>
 
 #include <iostream>
 #include "linux_parser.h"
